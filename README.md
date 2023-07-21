@@ -1,7 +1,7 @@
 ***This solution will trigger a notification to Microsoft 365 via a Teams Message when your license consumption exceeds 80%. A notification will be received for each type of license.***
 
-![Screenshot](https://github.com/MSPFE2019/m365licensenotification/blob/main/M365License.png)
 
+![Alt text]([https://assets.digitalocean.com/articles/alligator/boo.svg](https://github.com/MSPFE2019/m365licensenotification/blob/main/M365License.png) "Screenshot")
 
 Requirements:
 - Power Automate Per User License for account running the flow
