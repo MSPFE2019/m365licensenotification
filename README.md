@@ -1,4 +1,4 @@
-****This solution will trigger a notification to Microsoft 365 via a Teams Message when your license consumption exceeds 80%. A notification will be received for each type of license.
+*This solution will trigger a notification to Microsoft 365 via a Teams Message when your license consumption exceeds 80%. A notification will be received for each type of license.
 
 
 Requirements:
