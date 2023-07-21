@@ -48,6 +48,8 @@ For the Office365 group list of people who will get the notification, you'll nee
 
 **Step 8: Download and Import M365 License Solution to Power Apps**
 
+
+
 ![Download Solution](https://github.com/MSPFE2019/m365licensenotification/blob/main/M365LicenseNotification_1_0_0_3.zip)
 
 Follow these steps to import the M365 License Solution:
