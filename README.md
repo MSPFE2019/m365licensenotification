@@ -47,7 +47,8 @@ Make sure to note down the following important details:
 For the Office365 group list of people who will get the notification, you'll need the Group ID. This can be found in the Azure portal, under Azure Active Directory -> Groups. Select the group and find the "Object ID" field.
 
 **Step 8: Download and Import M365 License Solution to Power Apps**
-[Download Solution](https://github.com/MSPFE2019/m365licensenotification/blob/main/M365LicenseNotification_1_0_0_3.zip)
+
+![Download Solution](https://github.com/MSPFE2019/m365licensenotification/blob/main/M365LicenseNotification_1_0_0_3.zip)
 
 Follow these steps to import the M365 License Solution:
 
