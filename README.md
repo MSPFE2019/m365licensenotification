@@ -1,3 +1,7 @@
+Requirements:
+- Power Automate Per User License for account running the flow
+- Ablitiy to create Azue App Registration
+
 **Step-by-Step Guide to App Registration**
 
 Here is a more detailed step-by-step guide to help you register an application on Azure AD.
