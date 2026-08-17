@@ -17,7 +17,7 @@ Sign in to your Azure account and go to the Azure portal.
 
 **Step 2: Navigate to App Registrations**
 
-Go to Azure Active Directory, then select App registrations.
+Go to Microsoft Entra ID (formerly Azure Active Directory), then select App registrations.
 
 **Step 3: Register a new application**
 
@@ -35,6 +35,8 @@ You will need to set the right permissions for the API you are using. In this ca
 
 Navigate to "Certificates & secrets" and click on "+ New client secret". Give it a name, choose an expiry period, and click "Add". Copy this secret to a secure location, as you'll need it later.
 
+> ⚠️ **Secret rotation:** Client secrets expire. Set a calendar reminder to rotate the secret **before** expiry. When rotating, update the corresponding environment variable or flow connection with the new secret value before the old one expires to avoid flow failures. Use the shortest expiry period your operations allow. For production scenarios, prefer **certificate credentials** over client secrets. See [Add a client secret – Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app#add-a-client-secret).
+
 **Step 6: Gather Important Information**
 
 Make sure to note down the following important details:
@@ -44,7 +46,7 @@ Make sure to note down the following important details:
 
 **Step 7: Get Group ID of Office365 Group**
 
-For the Office365 group list of people who will get the notification, you'll need the Group ID. This can be found in the Azure portal, under Azure Active Directory -> Groups. Select the group and find the "Object ID" field.
+For the Microsoft 365 group list of people who will get the notification, you'll need the Group ID. This can be found in the Microsoft Entra ID portal (formerly Azure Active Directory) at [https://entra.microsoft.com](https://entra.microsoft.com) under **Groups**. Select the group and find the **Object ID** field.
 
 **Step 8: Download and Import M365 License Solution to Power Apps**
 
@@ -63,4 +65,9 @@ Follow these steps to import the M365 License Solution:
 7. If prompted, enter the environment variables. You will not see this screen if value(s) are already present in your solution or the target environment.
 8. Click on "Import".
 
-That's it! You've successfully registered an application in Azure AD and imported a solution into Power Apps.
+That's it! You've successfully registered an application in Microsoft Entra ID and imported a solution into Power Apps.
+
+---
+
+> **Supported Cloud:** Commercial (GCC environments — verify the HTTP connector and Graph API availability at [Power Platform for US Government](https://learn.microsoft.com/en-us/power-platform/admin/powerapps-us-government)).  
+> **Last validated:** 2026-08-17. Confirm current Microsoft Entra ID app registration steps in [Microsoft documentation](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app).
