@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A guided, self-paced course that teaches Microsoft Foundry from first principles to production practice.">
+  <title>Foundry Field Guide — Learn Microsoft Foundry</title>
+  <script>
+    (() => {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const theme =
+        param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --cp-bg: #f7f4ef;
+      --cp-bg-elevated: #fcfbf8;
+      --cp-surface: #ffffff;
+      --cp-surface-soft: #f5f5f5;
+      --cp-border: #dedede;
+      --cp-border-strong: #919191;
+      --cp-text: #242424;
+      --cp-text-muted: #5c5c5c;
+      --cp-text-soft: #6f6f6f;
+      --cp-accent: #b11f4b;
+      --cp-accent-hover: #9a1a41;
+      --cp-accent-soft: rgba(177, 31, 75, 0.08);
+      --cp-accent-fg: #ffffff;
+      --cp-success: #16a34a;
+      --cp-danger: #dc2626;
+      --cp-warning: #f59e0b;
+      --cp-link: #0078d4;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+      --cp-overlay: rgba(255, 255, 255, 0.8);
+      --cp-panel: rgba(255, 255, 255, 0.86);
+      --cp-panel-strong: rgba(255, 255, 255, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.55);
+      --cp-highlight: rgba(177, 31, 75, 0.12);
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --cp-bg: #3d3b3a;
+      --cp-bg-elevated: #343231;
+      --cp-surface: #292929;
+      --cp-surface-soft: #2e2e2e;
+      --cp-border: #474747;
+      --cp-border-strong: #5f5f5f;
+      --cp-text: #dedede;
+      --cp-text-muted: #919191;
+      --cp-text-soft: #b0b0b0;
+      --cp-accent: #fd8ea1;
+      --cp-accent-hover: #fb7b91;
+      --cp-accent-soft: rgba(253, 142, 161, 0.14);
+      --cp-accent-fg: #1a1a1a;
+      --cp-success: #4ade80;
+      --cp-danger: #f87171;
+      --cp-warning: #fbbf24;
+      --cp-link: #4da6ff;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+      --cp-overlay: rgba(41, 41, 41, 0.88);
+      --cp-panel: rgba(41, 41, 41, 0.72);
+      --cp-panel-strong: rgba(41, 41, 41, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.04);
+      --cp-highlight: rgba(253, 142, 161, 0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--cp-bg);
+      color: var(--cp-text);
+      font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.55;
+    }
+    button, input { font: inherit; }
+    button { color: inherit; }
+    a { color: var(--cp-link); }
+    .topbar {
+      height: 68px;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--cp-border);
+      background: var(--cp-surface);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 750; letter-spacing: -0.02em; }
+    .brand-mark {
+      width: 34px; height: 34px; display: grid; place-items: center;
+      border-radius: 10px; background: var(--cp-accent); color: var(--cp-accent-fg); font-size: 18px;
+    }
+    .brand small { display: block; color: var(--cp-text-muted); font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; }
+    .top-actions { display: flex; align-items: center; gap: 18px; }
+    .quiet-button {
+      border: 1px solid var(--cp-border); background: var(--cp-surface); border-radius: 10px;
+      padding: 8px 12px; cursor: pointer;
+    }
+    .quiet-button:hover { border-color: var(--cp-border-strong); }
+    .progress-mini { color: var(--cp-text-muted); font-size: 13px; }
+    .layout { display: grid; grid-template-columns: 280px minmax(0, 1fr); max-width: 1500px; margin: 0 auto; min-height: calc(100vh - 68px); }
+    aside {
+      padding: 26px 18px 32px 24px;
+      border-right: 1px solid var(--cp-border);
+      background: var(--cp-bg-elevated);
+    }
+    .side-label { margin: 0 0 12px; color: var(--cp-text-soft); font-size: 11px; font-weight: 700; letter-spacing: .11em; text-transform: uppercase; }
+    .side-progress { padding: 15px; margin-bottom: 24px; border: 1px solid var(--cp-border); border-radius: 16px; background: var(--cp-surface); }
+    .progress-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 13px; }
+    .progress-row strong { font-size: 18px; }
+    .progress-track { height: 6px; overflow: hidden; border-radius: 99px; background: var(--cp-surface-soft); }
+    .progress-fill { height: 100%; width: 0; background: var(--cp-accent); transition: width .25s ease; }
+    .search-wrap { position: relative; margin: 0 0 23px; }
+    .search-wrap span { position: absolute; left: 11px; top: 8px; color: var(--cp-text-muted); }
+    .search-wrap input {
+      width: 100%; height: 38px; padding: 7px 10px 7px 34px;
+      color: var(--cp-text); background: var(--cp-surface); border: 1px solid var(--cp-border); border-radius: 10px; outline: none;
+    }
+    .search-wrap input:focus { border-color: var(--cp-accent); box-shadow: 0 0 0 3px var(--cp-accent-soft); }
+    .module-list { display: grid; gap: 4px; }
+    .module-button {
+      display: grid; grid-template-columns: 32px 1fr auto; align-items: center; gap: 9px;
+      width: 100%; padding: 10px 9px; text-align: left; border: 0; border-radius: 10px;
+      background: transparent; cursor: pointer;
+    }
+    .module-button:hover { background: var(--cp-surface-soft); }
+    .module-button.active { color: var(--cp-accent); background: var(--cp-accent-soft); font-weight: 650; }
+    .module-number {
+      display: grid; place-items: center; width: 27px; height: 27px; border: 1px solid var(--cp-border);
+      border-radius: 50%; color: var(--cp-text-muted); font-size: 12px;
+    }
+    .module-button.active .module-number { color: var(--cp-accent); border-color: var(--cp-accent); }
+    .module-title { font-size: 13px; line-height: 1.3; }
+    .module-status { color: var(--cp-success); font-size: 12px; }
+    .side-bottom { margin-top: 28px; padding: 16px; border-top: 1px solid var(--cp-border); }
+    .side-bottom a { color: var(--cp-text-muted); font-size: 13px; text-decoration: none; }
+    .side-bottom a:hover { color: var(--cp-link); text-decoration: underline; }
+    main { min-width: 0; padding: 34px clamp(22px, 5vw, 76px) 70px; }
+    .content { max-width: 900px; margin: 0 auto; }
+    .eyebrow { color: var(--cp-accent); font-weight: 700; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; }
+    h1 { max-width: 760px; margin: 10px 0 12px; font-size: clamp(32px, 5vw, 52px); line-height: 1.08; letter-spacing: -.04em; }
+    .intro { max-width: 740px; margin: 0; color: var(--cp-text-muted); font-size: 17px; }
+    .welcome { padding: 28px; margin: 25px 0 32px; border: 1px solid var(--cp-border); border-radius: 16px; background: var(--cp-surface); }
+    .welcome-grid { display: grid; grid-template-columns: minmax(0, 1fr) 210px; gap: 26px; align-items: center; }
+    .welcome h2 { margin: 0 0 8px; font-size: 21px; }
+    .welcome p { margin: 0; color: var(--cp-text-muted); }
+    .welcome-stat { padding: 17px; border-radius: 12px; background: var(--cp-accent-soft); text-align: center; }
+    .welcome-stat strong { display: block; color: var(--cp-accent); font-size: 30px; }
+    .welcome-stat span { color: var(--cp-text-muted); font-size: 12px; }
+    .section-heading { margin: 0 0 14px; font-size: 20px; }
+    .path-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 34px; }
+    .path-card { min-height: 133px; padding: 16px; border: 1px solid var(--cp-border); border-radius: 16px; background: var(--cp-surface); }
+    .path-card span { color: var(--cp-accent); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .path-card strong { display: block; margin: 6px 0 3px; }
+    .path-card p { margin: 0; color: var(--cp-text-muted); font-size: 13px; }
+    .lesson-top { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+    .lesson-top .eyebrow { margin-bottom: 2px; }
+    .lesson-top h1 { font-size: clamp(30px, 4vw, 44px); }
+    .lesson-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 18px; }
+    .pill { padding: 4px 10px; border: 1px solid var(--cp-border); border-radius: 99px; color: var(--cp-text-muted); font-size: 12px; }
+    .lesson-objective { padding: 14px 16px; margin: 18px 0 24px; border-left: 3px solid var(--cp-accent); border-radius: 0 10px 10px 0; background: var(--cp-accent-soft); }
+    .lesson-objective strong { display: block; margin-bottom: 2px; font-size: 13px; }
+    .lesson-objective p { margin: 0; color: var(--cp-text-muted); }
+    .lesson-body h2 { margin: 28px 0 9px; font-size: 22px; letter-spacing: -.02em; }
+    .lesson-body h3 { margin: 20px 0 6px; font-size: 16px; }
+    .lesson-body p { color: var(--cp-text-muted); }
+    .lesson-body ul, .lesson-body ol { padding-left: 23px; color: var(--cp-text-muted); }
+    .lesson-body li { padding: 3px 0; }
+    .concept-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 16px 0; }
+    .concept { padding: 15px; border: 1px solid var(--cp-border); border-radius: 12px; background: var(--cp-surface); }
+    .concept strong { display: block; margin-bottom: 4px; color: var(--cp-text); }
+    .concept p { margin: 0; font-size: 14px; }
+    .callout { padding: 15px 17px; margin: 18px 0; border: 1px solid var(--cp-border); border-radius: 12px; background: var(--cp-surface-soft); }
+    .callout strong { display: block; margin-bottom: 4px; }
+    .callout p { margin: 0; }
+    .code-block { position: relative; padding: 17px; overflow-x: auto; border: 1px solid var(--cp-border); border-radius: 12px; background: var(--cp-surface); color: var(--cp-text); }
+    pre, code { font-family: Consolas, "Courier New", Courier, monospace; font-size: 13px; }
+    pre { margin: 0; white-space: pre-wrap; }
+    .resource-list { display: grid; gap: 8px; margin: 12px 0 25px; }
+    .resource-link { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border: 1px solid var(--cp-border); border-radius: 10px; background: var(--cp-surface); text-decoration: none; }
+    .resource-link:hover { border-color: var(--cp-link); }
+    .resource-link span:first-child { color: var(--cp-text); font-weight: 600; }
+    .resource-link span:last-child { color: var(--cp-text-muted); font-size: 12px; }
+    .quiz { margin-top: 34px; padding: 22px; border: 1px solid var(--cp-border); border-radius: 16px; background: var(--cp-surface); }
+    .quiz-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+    .quiz-header h2 { margin: 0; font-size: 21px; }
+    .quiz-header p { margin: 3px 0 0; color: var(--cp-text-muted); font-size: 13px; }
+    .question { padding: 16px 0; border-top: 1px solid var(--cp-border); }
+    .question h3 { margin: 0 0 10px; font-size: 15px; }
+    .option { display: flex; align-items: flex-start; gap: 9px; padding: 9px 11px; margin: 6px 0; border: 1px solid var(--cp-border); border-radius: 10px; cursor: pointer; }
+    .option:hover { border-color: var(--cp-border-strong); background: var(--cp-surface-soft); }
+    .option:has(input:checked) { border-color: var(--cp-accent); background: var(--cp-accent-soft); }
+    .option input { margin-top: 4px; accent-color: var(--cp-accent); }
+    .answer-note { display: none; padding: 9px 11px; margin-top: 8px; border-radius: 10px; font-size: 13px; }
+    .answer-note.correct { display: block; color: var(--cp-success); background: var(--cp-accent-soft); }
+    .answer-note.incorrect { display: block; color: var(--cp-danger); background: var(--cp-surface-soft); }
+    .quiz-controls { display: flex; align-items: center; gap: 12px; margin-top: 15px; }
+    .primary-button { padding: 10px 15px; border: 0; border-radius: 10px; background: var(--cp-accent); color: var(--cp-accent-fg); font-weight: 650; cursor: pointer; }
+    .primary-button:hover { background: var(--cp-accent-hover); }
+    .quiz-result { color: var(--cp-text-muted); font-size: 13px; }
+    .lesson-footer { display: flex; justify-content: space-between; gap: 14px; margin-top: 25px; padding-top: 18px; border-top: 1px solid var(--cp-border); }
+    .lesson-footer .quiet-button:disabled { opacity: .5; cursor: not-allowed; }
+    .empty-state { padding: 25px; border: 1px solid var(--cp-border); border-radius: 12px; color: var(--cp-text-muted); background: var(--cp-surface); }
+    .footer-note { margin-top: 36px; color: var(--cp-text-soft); font-size: 12px; }
+    @media (max-width: 850px) {
+      .layout { grid-template-columns: 1fr; }
+      aside { position: static; padding: 16px; border-right: 0; border-bottom: 1px solid var(--cp-border); }
+      .side-progress { display: none; }
+      .side-label { display: none; }
+      .search-wrap { margin-bottom: 10px; }
+      .module-list { display: flex; overflow-x: auto; padding-bottom: 4px; }
+      .module-button { min-width: 190px; }
+      .side-bottom { display: none; }
+      main { padding-top: 24px; }
+    }
+    @media (max-width: 580px) {
+      .topbar { height: 58px; padding: 0 15px; }
+      .top-actions { gap: 8px; }
+      .progress-mini { display: none; }
+      .layout { min-height: calc(100vh - 58px); }
+      main { padding: 21px 16px 50px; }
+      .welcome { padding: 20px; }
+      .welcome-grid { grid-template-columns: 1fr; }
+      .welcome-stat { text-align: left; }
+      .path-grid, .concept-grid { grid-template-columns: 1fr; }
+      .path-card { min-height: auto; }
+      .lesson-top { align-items: flex-start; }
+      .lesson-top .quiet-button { padding: 7px 9px; }
+      .quiz { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">F</div>
+      <div>Foundry Field Guide<small>Microsoft Foundry learning path</small></div>
+    </div>
+    <div class="top-actions">
+      <span class="progress-mini" id="topProgress">0 of 8 lessons complete</span>
+      <button class="quiet-button" id="themeToggle" type="button" aria-label="Toggle color theme">◐ Theme</button>
+    </div>
+  </header>
+  <div class="layout">
+    <aside>
+      <div class="side-progress">
+        <div class="progress-row"><span>Your learning journey</span><strong id="progressPercent">0%</strong></div>
+        <div class="progress-track" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+      <p class="side-label">Course sections</p>
+      <label class="search-wrap">
+        <span aria-hidden="true">⌕</span>
+        <input id="moduleSearch" type="search" placeholder="Find a section..." aria-label="Search course sections">
+      </label>
+      <nav class="module-list" id="moduleList" aria-label="Course sections"></nav>
+      <div class="side-bottom">
+        <a href="https://learn.microsoft.com/azure/ai-foundry/" target="_blank" rel="noreferrer">Official Microsoft Learn ↗</a>
+      </div>
+    </aside>
+    <main><div class="content" id="content" aria-live="polite"></div></main>
+  </div>
+  <script>
+    const modules = [
+      {
+        title: "Meet Microsoft Foundry", level: "Beginner", time: "8 min",
+        objective: "Explain what Microsoft Foundry is and where it fits in an AI solution.",
+        summary: "Start with the platform's purpose, core vocabulary, and a realistic mental model.",
+        sections: [
+          { heading: "What is Microsoft Foundry?", text: "Microsoft Foundry is Microsoft's platform for building, customizing, evaluating, deploying, and operating generative AI applications and agents. It brings model access and development workflows together with Azure identity, networking, governance, and operations. It is not a single model: it is the workspace and service layer around models and AI applications." },
+          { heading: "A useful mental model", text: "Think of Foundry as a workshop. You choose a model for a job, connect it to the data or tools it needs, test its behavior, and then deploy it behind an application. Your application remains responsible for its user experience, business rules, and safe handling of the model's output." },
+          { heading: "The first vocabulary to know", cards: [
+            ["Project", "A working space for organizing AI development resources and work."],
+            ["Model", "A trained system that generates, transforms, or reasons over inputs."],
+            ["Deployment", "A configured way to invoke a model, with a serving option and endpoint."],
+            ["Agent", "An application pattern where a model can select tools and take steps toward a goal."]
+          ] }
+        ],
+        questions: [
+          { q: "Which description best captures Microsoft Foundry?", options: ["A single AI model that answers every request", "A platform for building and operating AI applications and agents", "A replacement for every application database"], answer: 1, why: "Foundry provides a platform and workflows; you still select models and build an application around them." },
+          { q: "What is a model deployment in this mental model?", options: ["A configured way to invoke a model", "A user account", "A dataset used only for training"], answer: 0, why: "A deployment makes a chosen model available for inference with a selected serving configuration." },
+          { q: "Who owns the application's business rules and user experience?", options: ["The model by itself", "Your application team", "The evaluation dataset"], answer: 1, why: "The model is a component. Application behavior, UX, and business controls belong in the solution you build." }
+        ],
+        resources: [["Microsoft Foundry documentation", "https://learn.microsoft.com/azure/foundry/"]]
+      },
+      {
+        title: "Set up your workspace", level: "Beginner", time: "10 min",
+        objective: "Describe the relationship between an Azure resource, a Foundry project, identity, and a connection.",
+        summary: "Learn what needs to exist before you build, and how access and resources are organized.",
+        sections: [
+          { heading: "Start with a project and permissions", text: "In the Foundry portal, sign in with an account that has access to the relevant Azure subscription and resource. Create or select a Foundry resource and project according to your organization's setup. Exact setup options and portal screens can change, so use the current Microsoft Learn quickstart and your administrator's guidance." },
+          { heading: "Resource, project, connection", cards: [
+            ["Azure resource", "The Azure-managed service boundary used for billing, access, and configuration."],
+            ["Project", "The focused workspace where a team organizes model and application work."],
+            ["Connection", "A managed reference to another resource or service, such as data or a model endpoint."],
+            ["Identity and role", "The authenticated principal and granted permissions that determine what it may access or change."]
+          ] },
+          { heading: "A secure first setup", text: "Use Microsoft Entra ID and least-privilege role assignments. Avoid putting keys or secrets into source code, notebooks, prompts, screenshots, or browser-side JavaScript. For team or production workloads, prefer managed identity or an approved secret store where supported. Confirm networking, region, model availability, quotas, and cost ownership before experiments." }
+        ],
+        questions: [
+          { q: "What does a connection generally represent?", options: ["A managed reference to a resource or service", "A model's hidden reasoning", "A user-facing chat transcript"], answer: 0, why: "Connections help projects use configured resources and services without embedding credentials in application code." },
+          { q: "What is a good default for permissions?", options: ["Give every teammate owner access", "Use least privilege and approved identity", "Share one key in a team chat"], answer: 1, why: "Least privilege limits the impact of mistakes and supports accountable access." },
+          { q: "Before deploying a model, which should you verify?", options: ["Region, availability, quota, and cost", "Only the model's display name", "Whether the prompt has emojis"], answer: 0, why: "Availability, quotas, regional constraints, and cost can affect whether a deployment can be created and operated." }
+        ],
+        resources: [["Create a Foundry resource and project", "https://learn.microsoft.com/azure/foundry/how-to/create-projects"]]
+      },
+      {
+        title: "Choose and use models", level: "Beginner", time: "12 min",
+        objective: "Choose a model by task, quality, latency, deployment constraints, and cost—not by popularity alone.",
+        summary: "Understand the model catalog, inference, deployments, and how to make a first request.",
+        sections: [
+          { heading: "Match the model to the task", text: "Model catalogs can include text, reasoning, embedding, speech, image, and multimodal models from different providers. Compare models using the same representative task and a realistic evaluation set. Check input and output limits, supported modalities, region, licensing or usage terms, latency, and price." },
+          { heading: "Model versus deployment", text: "A model is the underlying capability. A deployment is the configured serving instance or route through which your code makes requests. The deployment name and API shape depend on the offering you use. Keep model selection, deployment configuration, and your application's endpoint settings distinct." },
+          { heading: "A minimal request pattern", text: "Most model calls follow a simple pattern: authenticate, select a deployment or endpoint, send structured input, handle the response, and record useful operational metadata. Do not assume every model accepts the same parameters or returns the same schema; follow the model-specific API reference." },
+          { heading: "Example: making model selection", code: "task = \"summarize an internal policy in 5 bullets\"\nrequirements = [\"English\", \"under 3 seconds\", \"no external data\"]\n\nfor model in candidate_models:\n    result = evaluate(model, representative_examples)\n    compare(result.quality, result.latency, result.cost)\n\nchoose the model that meets the requirements with the best trade-off" }
+        ],
+        questions: [
+          { q: "What is the best first step when comparing candidate models?", options: ["Run the same representative tasks and compare results", "Choose the newest model without testing", "Pick the model with the longest name"], answer: 0, why: "A consistent evaluation on representative inputs reveals task fit and trade-offs." },
+          { q: "How are a model and its deployment different?", options: ["They are always identical names for the same object", "The model is the capability; deployment configures how it is served", "Deployment is the training dataset"], answer: 1, why: "The model and the configured endpoint/serving option are related but separate concepts." },
+          { q: "Why check model terms and supported modalities?", options: ["They affect suitability and permitted use", "They determine your UI font", "They replace identity configuration"], answer: 0, why: "Capabilities and terms vary, so verify both before building around a model." }
+        ],
+        resources: [["Model catalog concepts", "https://learn.microsoft.com/azure/foundry/concepts/foundry-models-overview"], ["Build with models and agents", "https://learn.microsoft.com/azure/foundry/quickstarts/get-started-code"]]
+      },
+      {
+        title: "Ground answers with your data", level: "Intermediate", time: "14 min",
+        objective: "Explain retrieval-augmented generation (RAG), its data flow, and how to test grounded answers.",
+        summary: "Move beyond general model knowledge by retrieving approved, relevant source material.",
+        sections: [
+          { heading: "Why grounding matters", text: "A language model generates likely text from learned patterns; it does not automatically know your latest private policies or records. Retrieval-augmented generation (RAG) searches a permitted knowledge source for relevant passages and supplies them to the model as context. The application can then ask for an answer based on those passages and cite the retrieved sources." },
+          { heading: "The retrieval loop", cards: [
+            ["1 · Prepare", "Collect approved content, remove or protect sensitive data, and split it into useful passages."],
+            ["2 · Index", "Create searchable representations, often including text and vector embeddings."],
+            ["3 · Retrieve", "Search for passages relevant to the user's question, applying identity and access filters."],
+            ["4 · Generate", "Give selected passages to the model with instructions to answer from evidence and acknowledge gaps."]
+          ] },
+          { heading: "What to evaluate", text: "Test whether retrieval finds the right documents, whether the answer is supported by those documents, whether citations point to the right evidence, and whether access rules prevent users from seeing content they cannot access. Include unanswerable questions, stale content, ambiguous requests, and adversarial instructions embedded in documents." },
+          { heading: "Important limitation", text: "Grounding improves access to evidence; it does not guarantee truth. Retrieval can miss relevant content, content can be wrong, and the model can still misread context. Keep citations, abstention behavior, permissions, and human review appropriate to the impact of the use case." }
+        ],
+        questions: [
+          { q: "What does retrieval do in a RAG system?", options: ["Finds potentially relevant source passages for the request", "Fine-tunes model weights automatically", "Guarantees that every answer is correct"], answer: 0, why: "Retrieval supplies relevant context; answer quality still needs evaluation." },
+          { q: "Why apply authorization during retrieval?", options: ["To keep users from receiving content they are not allowed to access", "To increase the model's context window", "To reduce all answers to one sentence"], answer: 0, why: "Access control must apply to retrieved content, not just to the UI or final answer." },
+          { q: "Which is a useful RAG test?", options: ["An unanswerable question and whether the system admits its limits", "Only asking easy questions with known answers", "Testing just the homepage load speed"], answer: 0, why: "A reliable system should handle missing or insufficient evidence safely." }
+        ],
+        resources: [["Build a RAG solution with Foundry", "https://learn.microsoft.com/azure/foundry/concepts/retrieval-augmented-generation"], ["Foundry IQ overview", "https://learn.microsoft.com/azure/foundry/agents/concepts/what-is-foundry-iq"]]
+      },
+      {
+        title: "Build your first agent", level: "Intermediate", time: "15 min",
+        objective: "Distinguish an agent from a basic prompt and design a narrow, controlled tool workflow.",
+        summary: "Understand the model-tool loop, state, permissions, and agent boundaries.",
+        sections: [
+          { heading: "Prompt versus agent", text: "A basic model call responds to provided input. An agent can use a model to decide which permitted tool to call, inspect the tool result, and decide what to do next. This loop can make an agent useful for multi-step tasks, but it also introduces more opportunities for errors and unintended actions." },
+          { heading: "Agent building blocks", cards: [
+            ["Instructions", "Define the agent's role, boundaries, and how to handle uncertainty."],
+            ["Tools", "Functions or services the agent may request; validate every argument and result."],
+            ["State", "Conversation or task information retained between steps; define its scope and lifetime."],
+            ["Orchestration", "The runtime logic that decides whether a tool call is allowed and how it executes."]
+          ] },
+          { heading: "Design the smallest useful agent", text: "Begin with one well-bounded task and a small set of read-only tools. Validate tool inputs independently of the model, enforce authorization in the tool/service, cap steps and time, and require explicit confirmation before consequential writes. Return a clear explanation when the agent cannot safely complete the task." },
+          { heading: "Tool calls are requests, not proof", text: "A model may propose a tool call, but your application must decide whether it is valid, authorized, and safe. Treat model output and retrieved text as untrusted input. Never rely on the system prompt as your only security boundary." }
+        ],
+        questions: [
+          { q: "What makes an agent different from a single basic model call?", options: ["It can choose among tools and act through an orchestrated loop", "It cannot use a model", "It is always more accurate"], answer: 0, why: "Agents can use tools over multiple steps; that flexibility also adds risk and complexity." },
+          { q: "Where should permission checks for a tool be enforced?", options: ["In the trusted tool or service, independently of the model", "Only in the agent's natural-language prompt", "Only after the action has completed"], answer: 0, why: "Authorization must be enforced at the trusted execution boundary." },
+          { q: "What is a safe starting tool set?", options: ["A small set of narrow, read-only tools", "Unrestricted shell access", "Every API available in the tenant"], answer: 0, why: "Narrow tools limit the agent's action surface while you learn and evaluate its behavior." }
+        ],
+        resources: [["Microsoft Foundry Agent Service", "https://learn.microsoft.com/azure/foundry/agents/overview"], ["Create a prompt agent", "https://learn.microsoft.com/azure/foundry/agents/quickstarts/prompt-agent"]]
+      },
+      {
+        title: "Evaluate and improve quality", level: "Intermediate", time: "13 min",
+        objective: "Create a repeatable evaluation loop using representative cases, measurable criteria, and human review.",
+        summary: "Replace intuition-only testing with evidence about quality, safety, and regressions.",
+        sections: [
+          { heading: "Evaluation is a development habit", text: "Before tuning prompts or switching models, define what good looks like. Build a small, representative dataset that includes normal requests, edge cases, and known failure modes. Version the dataset and instructions so comparisons are meaningful." },
+          { heading: "Measure more than fluency", cards: [
+            ["Task success", "Did the output satisfy the actual user need and required format?"],
+            ["Groundedness", "Are factual claims supported by supplied evidence?"],
+            ["Safety", "Does the system refuse or redirect unsafe, unauthorized, or out-of-scope requests?"],
+            ["Operations", "What are latency, token usage, failure rates, and cost per successful task?"]
+          ] },
+          { heading: "A practical improvement loop", text: "1. Capture representative examples and expected behavior. 2. Run a baseline. 3. Inspect failures, including tool traces and retrieved context. 4. Change one variable at a time. 5. Re-run the evaluation and compare quality, safety, latency, and cost. 6. Have qualified people review high-impact outputs." },
+          { heading: "Use automated graders carefully", text: "Automated evaluators can help scale checks, but they are not ground truth. Calibrate them against human judgments, inspect disagreements, and use deterministic checks for requirements such as valid JSON, required fields, or exact policy rules." }
+        ],
+        questions: [
+          { q: "What makes an evaluation comparison useful?", options: ["A versioned, representative dataset and a consistent baseline", "Changing model, prompt, and data at once", "Testing only on training examples"], answer: 0, why: "A stable test set and baseline make it possible to attribute changes and catch regressions." },
+          { q: "Should fluent output alone count as success?", options: ["Yes, fluency proves factual correctness", "No; measure task success, grounding, safety, and operations too", "Only when the model is large"], answer: 1, why: "Fluency does not establish correctness, usefulness, safety, or operational fitness." },
+          { q: "How should automated graders be used?", options: ["As useful signals calibrated against human judgment", "As unquestionable truth", "Only as a substitute for access control"], answer: 0, why: "Graders can scale evaluations but should be validated and their disagreements reviewed." }
+        ],
+        resources: [["Evaluate and observe generative AI applications", "https://learn.microsoft.com/azure/foundry/concepts/observability"], ["Evaluate agent workflows", "https://learn.microsoft.com/azure/foundry/observability/how-to/evaluate-agent"]]
+      },
+      {
+        title: "Responsible AI and security", level: "Advanced", time: "14 min",
+        objective: "Identify key risks in AI applications and apply defense in depth across data, models, tools, and people.",
+        summary: "Design for privacy, least privilege, prompt injection, content safety, and human oversight.",
+        sections: [
+          { heading: "Start with the impact", text: "Describe who may be affected, what decisions the system influences, and what happens when it is wrong. Set acceptable-use boundaries and escalation paths. A low-risk drafting assistant and an agent that changes account access do not need the same safeguards." },
+          { heading: "Defense in depth", cards: [
+            ["Identity", "Authenticate users and services; authorize access at each resource and tool boundary."],
+            ["Data", "Minimize, classify, protect, and retain data according to policy; enforce retrieval permissions."],
+            ["Input and output", "Test for prompt injection, harmful content, sensitive data exposure, and unsafe outputs."],
+            ["Human control", "Require review or confirmation for consequential actions and provide an easy way to report issues."]
+          ] },
+          { heading: "Prompt injection and untrusted content", text: "User input, retrieved documents, web pages, and tool output can contain instructions that conflict with your application rules. Delimit and label untrusted content, keep secrets out of prompts, limit tool permissions, validate structured arguments, and make authorization decisions in trusted code. Evaluate indirect prompt injection, not just direct user prompts." },
+          { heading: "Governance in practice", text: "Keep an inventory of models, data sources, tools, owners, and deployment purposes. Record evaluation results and changes. Define monitoring, incident response, retention, and retirement processes. Use the controls and services approved for your environment, and verify current compliance requirements with your organization's policy owners." }
+        ],
+        questions: [
+          { q: "What is the strongest primary defense against a model proposing an unauthorized action?", options: ["Enforce authorization in the trusted tool/service", "Add more forceful wording to the prompt", "Hide the tool's name from the UI"], answer: 0, why: "Trusted code and services must enforce permissions even when model behavior is unexpected." },
+          { q: "Which content should be treated as potentially untrusted?", options: ["Only user prompts", "User prompts, retrieved documents, and tool results", "Only content from unknown websites"], answer: 1, why: "Indirect injection may arrive through any content the model processes, including trusted-looking retrieved data." },
+          { q: "How should safeguards scale?", options: ["Based on potential impact and risk", "Identically for every use case", "Only based on model size"], answer: 0, why: "Safeguards should be proportional to the consequences and exposure of the system." }
+        ],
+        resources: [["Trustworthy AI in Microsoft Foundry", "https://learn.microsoft.com/azure/foundry/responsible-use-of-ai-overview"], ["Azure AI Content Safety", "https://learn.microsoft.com/azure/ai-services/content-safety/overview"]]
+      },
+      {
+        title: "Deploy, monitor, and optimize", level: "Advanced", time: "16 min",
+        objective: "Plan a production rollout with operational controls, monitoring, cost management, and continuous evaluation.",
+        summary: "Turn a successful prototype into a service that can be operated and improved responsibly.",
+        sections: [
+          { heading: "Before production", text: "Confirm supported deployment options and regional availability. Define authentication, network access, quotas, rate limits, retries, timeouts, secrets handling, and fallback behavior. Separate development and production environments, and establish who owns the service and its costs." },
+          { heading: "Observe the system, not only the model", text: "Monitor request volume, latency, error rates, throttling, token usage, estimated cost, safety signals, retrieval quality, and tool outcomes. Collect only the telemetry you need, protect it appropriately, and avoid logging sensitive prompts or responses without an approved purpose and retention policy." },
+          { heading: "Release safely", cards: [
+            ["Baseline", "Save the tested model, prompt, tools, dataset, and evaluation results."],
+            ["Stage", "Roll out to a limited audience or traffic slice when the architecture allows."],
+            ["Watch", "Review quality, safety, latency, cost, and user feedback against defined thresholds."],
+            ["Recover", "Keep a rollback or disable path and document incident ownership."]
+          ] },
+          { heading: "Optimize with evidence", text: "Use representative traces and evaluations to find expensive or slow steps. Consider smaller models for simpler tasks, caching only when appropriate, reducing unnecessary context, and improving retrieval. Re-test quality and safety after every optimization; do not trade away required safeguards for a lower bill." },
+          { heading: "Advanced architecture checkpoint", text: "A mature system keeps policy and authorization outside the model, uses explicit interfaces between orchestration and tools, versions prompts and evaluation data, measures end-to-end outcomes, and has a human-owned operational path for incidents and model changes." }
+        ],
+        questions: [
+          { q: "What should production monitoring cover?", options: ["Only whether the endpoint responds", "Quality, safety, latency, errors, usage, and cost", "Only model version"], answer: 1, why: "Production readiness spans user outcomes and operational health, not just availability." },
+          { q: "When is an optimization acceptable?", options: ["When it improves cost even if quality collapses", "When it is re-evaluated for quality, safety, and operations", "When a model vendor recommends it, without testing"], answer: 1, why: "Changes should be checked against the requirements and evaluation baseline." },
+          { q: "Why keep a rollback or disable path?", options: ["To respond safely to regressions or incidents", "To avoid measuring performance", "To remove the need for access controls"], answer: 0, why: "A recovery path helps the team contain issues while investigating." }
+        ],
+        resources: [["Monitor generative AI applications", "https://learn.microsoft.com/azure/foundry/observability/how-to/how-to-monitor-agents-dashboard"], ["Manage and optimize costs", "https://learn.microsoft.com/azure/foundry/concepts/manage-costs"]]
+      }
+    ];
+
+    const storageKey = "foundry-field-guide-progress-v1";
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem(storageKey) || "{}"); } catch (error) { console.warn("Could not read saved learning progress.", error); }
+    let current = -1;
+    const list = document.getElementById("moduleList");
+    const content = document.getElementById("content");
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
+    }
+    function updateProgress() {
+      const complete = modules.filter((_, index) => saved[index]?.complete).length;
+      const percent = Math.round((complete / modules.length) * 100);
+      document.getElementById("progressPercent").textContent = percent + "%";
+      document.getElementById("progressFill").style.width = percent + "%";
+      document.querySelector(".progress-track").setAttribute("aria-valuenow", percent);
+      document.getElementById("topProgress").textContent = `${complete} of ${modules.length} lessons complete`;
+    }
+    function renderNav(filter = "") {
+      const term = filter.trim().toLowerCase();
+      const filtered = modules.map((module, index) => ({ module, index })).filter(({ module }) => module.title.toLowerCase().includes(term));
+      list.innerHTML = filtered.map(({ module, index }) => `
+        <button class="module-button ${current === index ? "active" : ""}" data-index="${index}" type="button">
+          <span class="module-number">${index + 1}</span>
+          <span class="module-title">${escapeHtml(module.title)}</span>
+          <span class="module-status">${saved[index]?.complete ? "✓" : ""}</span>
+        </button>`).join("") || `<div class="empty-state">No sections match your search.</div>`;
+      list.querySelectorAll("[data-index]").forEach(button => button.addEventListener("click", () => openLesson(Number(button.dataset.index))));
+    }
+    function openHome() {
+      current = -1;
+      renderNav(document.getElementById("moduleSearch").value);
+      content.innerHTML = `
+        <div class="eyebrow">A practical, self-paced course</div>
+        <h1>Learn to build with Microsoft Foundry.</h1>
+        <p class="intro">Go from AI fundamentals to production-ready thinking—one focused lesson at a time. Each section includes a knowledge check and a short list of official resources.</p>
+        <section class="welcome">
+          <div class="welcome-grid">
+            <div><h2>Start wherever you are</h2><p>No prior AI platform experience required. Follow the sections in order, or jump to a topic. Your lesson completion is saved in this browser.</p></div>
+            <div class="welcome-stat"><strong>8 lessons</strong><span>Basics → production practice</span></div>
+          </div>
+        </section>
+        <h2 class="section-heading">Your learning path</h2>
+        <div class="path-grid">
+          <div class="path-card"><span>01 · Foundation</span><strong>Understand the platform</strong><p>Core concepts, workspace, models, and grounding.</p></div>
+          <div class="path-card"><span>02 · Build</span><strong>Create capable apps</strong><p>Agents, tools, evaluation, and responsible design.</p></div>
+          <div class="path-card"><span>03 · Operate</span><strong>Prepare for production</strong><p>Deployment, monitoring, safety, and optimization.</p></div>
+        </div>
+        <button class="primary-button" type="button" id="startLearning">${saved[0]?.complete ? "Review first lesson" : "Start learning"} <span aria-hidden="true">→</span></button>
+        <p class="footer-note">Platform screens and capabilities evolve. Use the linked Microsoft Learn documentation to verify current setup steps, feature availability, and service limits.</p>`;
+      document.getElementById("startLearning").addEventListener("click", () => openLesson(0));
+      updateProgress();
+    }
+    function sectionMarkup(section) {
+      if (section.cards) return `<h2>${escapeHtml(section.heading)}</h2><div class="concept-grid">${section.cards.map(card => `<div class="concept"><strong>${escapeHtml(card[0])}</strong><p>${escapeHtml(card[1])}</p></div>`).join("")}</div>`;
+      if (section.code) return `<h2>${escapeHtml(section.heading)}</h2><p>${escapeHtml(section.text)}</p><div class="code-block"><pre>${escapeHtml(section.code)}</pre></div>`;
+      return `<h2>${escapeHtml(section.heading)}</h2><p>${escapeHtml(section.text)}</p>`;
+    }
+    function renderQuiz(module, index) {
+      return `<section class="quiz" aria-labelledby="quizTitle">
+        <div class="quiz-header"><div><h2 id="quizTitle">Knowledge check</h2><p>Answer all ${module.questions.length} questions, then check your understanding.</p></div><span class="pill">Section ${index + 1}</span></div>
+        <form id="quizForm">${module.questions.map((question, qi) => `<div class="question" data-question="${qi}">
+          <h3>${qi + 1}. ${escapeHtml(question.q)}</h3>
+          ${question.options.map((option, oi) => `<label class="option"><input type="radio" name="q${qi}" value="${oi}"><span>${escapeHtml(option)}</span></label>`).join("")}
+          <div class="answer-note" id="note${qi}" aria-live="polite"></div>
+        </div>`).join("")}
+        <div class="quiz-controls"><button class="primary-button" type="submit">Check answers</button><span class="quiz-result" id="quizResult" aria-live="polite"></span></div>
+        </form>
+      </section>`;
+    }
+    function openLesson(index) {
+      current = index;
+      const module = modules[index];
+      renderNav(document.getElementById("moduleSearch").value);
+      const resources = module.resources.map(resource => `<a class="resource-link" href="${escapeHtml(resource[1])}" target="_blank" rel="noreferrer"><span>${escapeHtml(resource[0])}</span><span>Microsoft Learn ↗</span></a>`).join("");
+      content.innerHTML = `
+        <div class="lesson-top"><div><div class="eyebrow">Lesson ${String(index + 1).padStart(2, "0")} of ${modules.length}</div><h1>${escapeHtml(module.title)}</h1></div><button class="quiet-button" id="homeButton" type="button">Course overview</button></div>
+        <div class="lesson-meta"><span class="pill">${escapeHtml(module.level)}</span><span class="pill">${escapeHtml(module.time)} read</span><span class="pill">${module.questions.length} knowledge questions</span></div>
+        <div class="lesson-objective"><strong>By the end, you can</strong><p>${escapeHtml(module.objective)}</p></div>
+        <article class="lesson-body">${module.sections.map(sectionMarkup).join("")}</article>
+        ${renderQuiz(module, index)}
+        <h2 class="section-heading" style="margin-top:30px">Continue learning</h2><div class="resource-list">${resources}</div>
+        <div class="lesson-footer"><button class="quiet-button" id="previousButton" type="button" ${index === 0 ? "disabled" : ""}>← Previous</button><button class="primary-button" id="nextButton" type="button">${index === modules.length - 1 ? "Finish course" : "Next lesson →"}</button></div>`;
+      document.getElementById("homeButton").addEventListener("click", openHome);
+      document.getElementById("previousButton").addEventListener("click", () => openLesson(Math.max(0, index - 1)));
+      document.getElementById("nextButton").addEventListener("click", () => index === modules.length - 1 ? openHome() : openLesson(index + 1));
+      document.getElementById("quizForm").addEventListener("submit", event => {
+        event.preventDefault();
+        const form = new FormData(event.currentTarget);
+        let score = 0;
+        let unanswered = 0;
+        module.questions.forEach((question, qi) => {
+          const selected = form.get(`q${qi}`);
+          const note = document.getElementById(`note${qi}`);
+          note.className = "answer-note";
+          if (selected === null) {
+            unanswered++;
+            return;
+          }
+          if (Number(selected) === question.answer) {
+            score++;
+            note.classList.add("correct");
+            note.textContent = "Correct. " + question.why;
+          } else {
+            note.classList.add("incorrect");
+            note.textContent = "Not quite. " + question.why;
+          }
+        });
+        const result = document.getElementById("quizResult");
+        if (unanswered) {
+          result.textContent = `Answer all questions to check your score (${unanswered} unanswered).`;
+          return;
+        }
+        result.textContent = `You got ${score} of ${module.questions.length} correct. ${score === module.questions.length ? "Excellent work!" : "Review the explanations and try again."}`;
+        if (score === module.questions.length) {
+          saved[index] = { complete: true, score, completedAt: new Date().toISOString() };
+          try { localStorage.setItem(storageKey, JSON.stringify(saved)); } catch (error) { console.warn("Could not save learning progress.", error); }
+          renderNav(document.getElementById("moduleSearch").value);
+          updateProgress();
+        }
+      });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    document.getElementById("moduleSearch").addEventListener("input", event => renderNav(event.target.value));
+    document.getElementById("themeToggle").addEventListener("click", () => {
+      const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+    });
+    renderNav();
+    openHome();
+  </script>
+</body>
+</html>
