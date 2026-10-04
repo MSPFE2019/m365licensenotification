@@ -71,9 +71,3 @@ That's it! You've successfully registered an application in Microsoft Entra ID a
 
 > **Supported Cloud:** Commercial (GCC environments — verify the HTTP connector and Graph API availability at [Power Platform for US Government](https://learn.microsoft.com/en-us/power-platform/admin/powerapps-us-government)).  
 > **Last validated:** 2026-08-17. Confirm current Microsoft Entra ID app registration steps in [Microsoft documentation](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app).
-
-## Microsoft Foundry learning app
-
-Open `index.html` in a browser to use the self-paced Microsoft Foundry learning path. It covers foundations through production practices, with a knowledge check and Microsoft Learn links in each section. Lesson completion is saved locally in your browser.
-
-The GitHub Pages workflow publishes the learning app from the `main` branch at [mspfe2019.github.io/m365licensenotification](https://mspfe2019.github.io/m365licensenotification) after it is merged and the workflow completes. Only the app page is included in the published site.
